@@ -1,13 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { google } = require('googleapis');
-const path = require('path');  // Importe o módulo path
+const path = require('path');  
 
 const app = express();
 const port = 3000;
 
 
-// Configuração do Google Sheets
+
 const credentials = require('./credenciais.json');
 const client = new google.auth.JWT(
     credentials.client_email,
@@ -18,18 +18,18 @@ const client = new google.auth.JWT(
 
 const spreadsheetId = '17bgayKiBGvw7ZvZIeKqh6dmGSVvTu90flqOYbupwkwE';
 
-// Middleware para análise do corpo da solicitação
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/CAD', express.static(path.join(__dirname, 'CAD')));
 
 
-// Rota para servir a página do formulário
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota para salvar dados na planilha
+
 app.post('/salvar-dados', async (req, res) => {
     try {
         await client.authorize();
@@ -39,7 +39,7 @@ app.post('/salvar-dados', async (req, res) => {
 
         await sheets.spreadsheets.values.append({
             spreadsheetId,
-            range: 'A1', // Coloque a célula onde você deseja começar a adicionar os dados
+            range: 'A1', 
             valueInputOption: 'USER_ENTERED',
             resource: {
                 values: [[nome, cpf, telefone, endereco]]
@@ -54,12 +54,12 @@ app.post('/salvar-dados', async (req, res) => {
     }
 });
 
-// Rota para a página de agradecimento
+
 app.get('/agradecimento', (req, res) => {
     res.send('<h1>Obrigado pela inscrição!</h1>');
 });
 
-// Inicia o servidor
+
 app.listen(port, () => {
     console.log(`Servidor está ouvindo na porta ${port}`);
 });
